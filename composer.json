@@ -1,0 +1,20 @@
+{
+    "name": "fatjon-lleshi/antares-validation",
+    "description": "Lightweight DTO hydration and validation for PHP 8.2+",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Antares\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fatjon Lleshi",
+            "email": "johnlesis91@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    }
+}
