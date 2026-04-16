@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Antares\Hydration;
 
 use Antares\Hydration\Exceptions\HydrationException;
+use Antares\Validation\Attributes\Strict;
 use Antares\Validation\Validator;
 
 final class Hydrator
@@ -24,6 +25,19 @@ final class Hydrator
         }
 
         $parameters = $constructor->getParameters();
+
+        // If strict mode is enabled we do not let extra request fields pass
+        $isStrict = !empty($reflectionClass->getAttributes(Strict::class));
+        if ($isStrict) {
+            $validKeys = array_map(fn($parameter) => $parameter->getName(), $parameters);
+            $extraKeys = array_diff(array_keys($data), $validKeys);
+            if (!empty($extraKeys)) {
+                throw new HydrationException(
+                    "Unknown fields: " . implode(', ', $extraKeys)
+                );
+            }
+        }
+
         $args = [];
 
         foreach ($parameters as $parameter) {
@@ -71,7 +85,7 @@ final class Hydrator
             }
             $args[] = $data[$name];
         }
-
+        
         $instance =  $reflectionClass->newInstanceArgs($args);
         $this->validator->validate($instance);
         return $instance;

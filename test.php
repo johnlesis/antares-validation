@@ -6,6 +6,7 @@ use Antares\Validation\Attributes\MinLength;
 use Antares\Validation\Attributes\Min;
 use Antares\Validation\Exceptions\ValidationException;
 use Antares\Hydration\Exceptions\HydrationException;
+use Antares\Validation\Attributes\Strict;
 
 require 'vendor/autoload.php';
 
@@ -45,3 +46,34 @@ try {
     echo $e->getMessage();
 }
 
+// test strict mode
+#[Strict]
+final readonly class StrictDTO
+{
+    public function __construct(
+        public string $name,
+        public int $age,
+    ) {}
+}
+
+// should throw - extra field
+try {
+    $dto = $hydrator->hydrate(StrictDTO::class, [
+        'name' => 'John',
+        'age'  => 25,
+        'extra' => 'not allowed',
+    ]);
+} catch (HydrationException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// should work - no extra fields
+try {
+    $dto = $hydrator->hydrate(StrictDTO::class, [
+        'name' => 'John',
+        'age'  => 25,
+    ]);
+    echo "OK: " . $dto->name . "\n";
+} catch (HydrationException $e) {
+    echo $e->getMessage() . "\n";
+}
