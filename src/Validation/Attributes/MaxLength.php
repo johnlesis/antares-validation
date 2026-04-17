@@ -11,7 +11,7 @@ final class MaxLength implements ValidationAttribute
 {
 
     public function __construct(
-        private readonly int $maxLength
+        public readonly int $maxLength
     ) {}
 
     public function validate(mixed $value): ?string

@@ -11,7 +11,7 @@ final class Min implements ValidationAttribute
 {
 
     public function __construct(
-        private readonly int|float $min
+        public readonly int|float $min
     ) {}
 
     public function validate(mixed $value): ?string

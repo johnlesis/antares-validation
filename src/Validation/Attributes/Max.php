@@ -11,7 +11,7 @@ final class Max implements ValidationAttribute
 {
 
     public function __construct(
-        private readonly int|float $max
+        public readonly int|float $max
     ) {}
 
     public function validate(mixed $value): ?string

@@ -11,7 +11,7 @@ final class MinLength implements ValidationAttribute
 {
 
     public function __construct(
-        private readonly int $minLength
+        public readonly int $minLength
     ) {}
 
     public function validate(mixed $value): ?string

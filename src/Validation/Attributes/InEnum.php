@@ -8,7 +8,7 @@ use Attribute;
 final class InEnum implements ValidationAttribute
 {
     public function __construct(
-        private readonly string $enumClass
+        public readonly string $enumClass
     ) {}
 
     public function validate(mixed $value): ?string
