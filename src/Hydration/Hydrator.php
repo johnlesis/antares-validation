@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Antares\Hydration;
 
 use Antares\Hydration\Exceptions\HydrationException;
+use Antares\Validation\Attributes\Dto;
 use Antares\Validation\Attributes\Strict;
 use Antares\Validation\Validator;
 
@@ -54,10 +55,16 @@ final class Hydrator
                 }
                 throw new HydrationException("Missing required parameter: $name");
             }
+            
             if ($type !== null && !$type->isBuiltin()) {
-                $args[] = $this->hydrate($type->getName(), $data[$name]);
-                continue;
+                $ref = new \ReflectionClass($type->getName());
+                if (!empty($ref->getAttributes(Dto::class))) {
+                    $args[] = $this->hydrate($type->getName(), $data[$name]);
+                    continue;
+                }
+                throw new HydrationException("Cannot hydrate parameter {$name}: class is not marked with #[Dto].");
             }
+
             if ($type->getName() === 'int') {
                 if (filter_var($data[$name], FILTER_VALIDATE_INT) === false) {
                     throw new HydrationException("Parameter {$name} must be a valid integer.");
